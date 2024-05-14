@@ -1,5 +1,7 @@
 from pynumaflow.mapper import Messages, Message, Datum, MapServer, Mapper
 
+from pynumaflow._constants import _LOGGER
+
 
 class Flatmap(Mapper):
     """
@@ -8,6 +10,7 @@ class Flatmap(Mapper):
     """
 
     def handler(self, keys: list[str], datum: Datum) -> Messages:
+        _LOGGER.info("disini...")
         val = datum.value
         _ = datum.event_time
         _ = datum.watermark
