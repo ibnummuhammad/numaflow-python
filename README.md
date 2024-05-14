@@ -40,6 +40,33 @@ Setup [pre-commit](https://pre-commit.com/) hooks:
 pre-commit install
 ```
 
+build udf:
+```bash
+cd examples/map/flatmap
+python -m build
+```
+
+build pynumaflow in root folder:
+```bash
+python -m build
+```
+
+copy pynumaflow to example folder:
+```bash
+cp dist/pynumaflow-0.7.0.tar.gz examples/map/flatmap/dist/pynumaflow.tar.gz
+```
+
+build example udf image:
+```bash
+cd examples/map/flatmap
+make image
+```
+
+push udf image:
+```bash
+docker push ibnummuhammad/map-flatmap:v1
+```
+
 ## Implementing different functionalities
 - [Implement User Defined Sources](https://github.com/numaproj/numaflow-python/tree/main/examples/source)
 - [Implement User Defined Source Transformers](https://github.com/numaproj/numaflow-python/tree/main/examples/sourcetransform)
