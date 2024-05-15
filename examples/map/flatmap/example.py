@@ -10,29 +10,28 @@ class Flatmap(Mapper):
     """
 
     def handler(self, keys: list[str], datum: Datum) -> Messages:
-        print("coba_print...")
-        # _LOGGER.info("type(datum)...")
-        # _LOGGER.info(type(datum))
-        # _LOGGER.info("type(datum.value)...")
-        # _LOGGER.info(type(datum.value))
-        # _LOGGER.info("type(datum.event_time)...")
-        # _LOGGER.info(type(datum.event_time))
-        # _LOGGER.info("type(datum.watermark)...")
-        # _LOGGER.info(type(datum.watermark))
+        print("datum")
+        print(datum)
+        print("datum.value")
+        print(datum.value)
+        print("datum.event_time")
+        print(datum.event_time)
+        print("datum.watermark")
+        print(datum.watermark)
         val = datum.value
         _ = datum.event_time
         _ = datum.watermark
         strs = val.decode("utf-8").split(",")
-        # _LOGGER.info("type(strs)...")
-        # _LOGGER.info(type(strs))
+        print("strs")
+        print(strs)
         messages = Messages()
-        # _LOGGER.info("type(messages)...")
-        # _LOGGER.info(type(messages))
         if len(strs) == 0:
             messages.append(Message.to_drop())
             return messages
         for s in strs:
             messages.append(Message(str.encode(s)))
+        print("messages")
+        print(messages)
         return messages
 
 
