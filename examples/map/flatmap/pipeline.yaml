@@ -11,15 +11,15 @@ spec:
         kafka:
           brokers:
             - host.minikube.internal:29092
-          topic: coba
-          consumerGroup: console-consumer-78922
+          topic: customers
+          consumerGroup: connect-jdbc-sink
     - name: kafka-in-2
       source:
         kafka:
           brokers:
             - host.minikube.internal:29092
-          topic: begini
-          consumerGroup: console-consumer-65912
+          topic: coba
+          consumerGroup: console-consumer-86156
     - name: flatmap
       udf:
         container:
@@ -42,12 +42,12 @@ spec:
       sink:
         # A simple log printing sink
         log: {}
-    - name: keluar
-      sink:
-        kafka:
-          brokers:
-            - host.minikube.internal:29092
-          topic: keluaran
+    # - name: keluar
+    #   sink:
+    #     kafka:
+    #       brokers:
+    #         - host.minikube.internal:29092
+    #       topic: keluaran
   edges:
     - from: kafka-in-1
       to: flatmap
@@ -55,5 +55,5 @@ spec:
       to: flatmap
     - from: flatmap
       to: out
-    - from: flatmap
-      to: keluar
+    # - from: flatmap
+    #   to: keluar
