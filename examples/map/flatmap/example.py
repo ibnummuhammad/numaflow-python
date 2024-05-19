@@ -23,6 +23,9 @@ class Flatmap(Mapper):
         val = datum.value
         _ = datum.event_time
         _ = datum.watermark
+        datum_str = datum.value.decode("utf-8")
+        print("datum_str...")
+        print(datum_str)
         strs = val.decode("utf-8").split(",")
         print("strs...")
         print(strs)
@@ -31,9 +34,8 @@ class Flatmap(Mapper):
         print(messages)
         if len(strs) == 0:
             messages.append(Message.to_drop())
-            return messages
-        for s in strs:
-            messages.append(Message(str.encode(s)))
+        else:
+            messages.append(Message(str.encode(datum_str)))
         print("messages...2")
         print(messages)
         return messages
