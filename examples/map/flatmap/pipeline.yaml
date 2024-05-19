@@ -6,12 +6,13 @@ spec:
   limits:
     readBatchSize: 2
   vertices:
-    - name: in
+    - name: kafka-in
       source:
-        # A self data generating source
-        generator:
-          rpu: 10
-          duration: 1s
+        kafka:
+          brokers:
+            - host.minikube.internal:29092
+          topic: coba
+          consumerGroup: console-consumer-78922
     - name: flatmap
       udf:
         container:
@@ -35,7 +36,7 @@ spec:
         # A simple log printing sink
         log: {}
   edges:
-    - from: in
+    - from: kafka-in
       to: flatmap
     - from: flatmap
       to: out
