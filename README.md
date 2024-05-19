@@ -56,6 +56,15 @@ copy pynumaflow to example folder:
 cp dist/pynumaflow-0.7.0.tar.gz examples/map/flatmap/dist/pynumaflow.tar.gz
 ```
 
+change udf image version:
+```bash
+cd examples/map/flatmap
+code Makefile
+
+# change version in first line
+TAG ?= v6
+```
+
 build example udf image:
 ```bash
 cd examples/map/flatmap

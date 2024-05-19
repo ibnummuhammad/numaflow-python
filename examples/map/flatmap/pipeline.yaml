@@ -23,7 +23,7 @@ spec:
     - name: flatmap
       udf:
         container:
-          image: "ibnummuhammad/map-flatmap:v5"
+          image: "ibnummuhammad/map-flatmap:v6"
           env:
             - name: PYTHONDEBUG
               value: "true"
