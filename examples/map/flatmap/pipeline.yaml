@@ -20,7 +20,25 @@ spec:
             - host.minikube.internal:29092
           topic: coba
           consumerGroup: console-consumer-86156
-    - name: flatmap
+    - name: function-1
+      udf:
+        container:
+          image: "ibnummuhammad/map-flatmap:v7"
+          env:
+            - name: PYTHONDEBUG
+              value: "true"
+      containerTemplate:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi
+        env:
+          - name: NUMAFLOW_DEBUG
+            value: "true" # DO NOT forget the double quotes!!!
+    - name: function-2
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v7"
@@ -50,10 +68,12 @@ spec:
           topic: keluaran
   edges:
     - from: kafka-in-1
-      to: flatmap
+      to: function-1
     - from: kafka-in-2
-      to: flatmap
-    - from: flatmap
+      to: function-1
+    - from: function-1
+      to: function-2
+    - from: function-2
       to: out
-    - from: flatmap
+    - from: function-2
       to: keluar
