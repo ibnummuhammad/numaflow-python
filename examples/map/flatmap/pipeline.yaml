@@ -1,7 +1,7 @@
 apiVersion: numaflow.numaproj.io/v1alpha1
 kind: Pipeline
 metadata:
-  name: simple-pipeline
+  name: ekyc-pipeline-rt-v2
 spec:
   limits:
     readBatchSize: 2
@@ -19,7 +19,7 @@ spec:
           brokers:
             - host.minikube.internal:29092
           topic: coba
-          consumerGroup: console-consumer-86156
+          consumerGroup: console-consumer-3128
     - name: function-1
       udf:
         container:
