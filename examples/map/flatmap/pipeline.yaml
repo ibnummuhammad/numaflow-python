@@ -1,21 +1,47 @@
 apiVersion: numaflow.numaproj.io/v1alpha1
 kind: Pipeline
 metadata:
-  name: simple-pipeline
+  name: ekyc-pipeline-rt-v2
 spec:
   limits:
     readBatchSize: 2
   vertices:
-    - name: in
+    - name: kafka-in-1
       source:
-        # A self data generating source
-        generator:
-          rpu: 10
-          duration: 1s
-    - name: flatmap
+        kafka:
+          brokers:
+            - host.minikube.internal:29092
+          topic: customers
+          consumerGroup: connect-jdbc-sink
+    - name: kafka-in-2
+      source:
+        kafka:
+          brokers:
+            - host.minikube.internal:29092
+          topic: coba
+          consumerGroup: console-consumer-3128
+    - name: function-1
       udf:
         container:
-          image: "quay.io/numaio/numaflow-python/map-flatmap:stable"
+          image: "ibnummuhammad/map-flatmap:v7"
+          env:
+            - name: PYTHONDEBUG
+              value: "true"
+      containerTemplate:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi
+        env:
+          - name: NUMAFLOW_DEBUG
+            value: "true" # DO NOT forget the double quotes!!!
+    - name: function-2
+      udf:
+        container:
+          image: "ibnummuhammad/map-flatmap:v7"
           env:
             - name: PYTHONDEBUG
               value: "true"
@@ -34,8 +60,20 @@ spec:
       sink:
         # A simple log printing sink
         log: {}
+    - name: keluar
+      sink:
+        kafka:
+          brokers:
+            - host.minikube.internal:29092
+          topic: keluaran
   edges:
-    - from: in
-      to: flatmap
-    - from: flatmap
+    - from: kafka-in-1
+      to: function-1
+    - from: kafka-in-2
+      to: function-1
+    - from: function-1
+      to: function-2
+    - from: function-2
       to: out
+    - from: function-2
+      to: keluar
