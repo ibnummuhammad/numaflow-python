@@ -1,7 +1,7 @@
 apiVersion: numaflow.numaproj.io/v1alpha1
 kind: Pipeline
 metadata:
-  name: ekyc-pipeline-rt-v3
+  name: ekyc-pipeline-rt-v7
 spec:
   limits:
     readBatchSize: 2
@@ -12,11 +12,11 @@ spec:
           brokers:
             - host.minikube.internal:29092
           topic: customers
-          consumerGroup: console-consumer-26360
+          consumerGroup: penyelam
     - name: textract-img
       udf:
         container:
-          image: "ibnummuhammad/map-flatmap:v7"
+          image: "ibnummuhammad/map-flatmap:v12"
           env:
             - name: PYTHONDEBUG
               value: "true"
@@ -34,7 +34,7 @@ spec:
     - name: analysis-textract-result
       udf:
         container:
-          image: "ibnummuhammad/map-flatmap:v7"
+          image: "ibnummuhammad/map-flatmap:v12"
           env:
             - name: PYTHONDEBUG
               value: "true"
