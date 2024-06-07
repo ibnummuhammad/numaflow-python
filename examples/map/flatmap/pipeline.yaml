@@ -1,26 +1,19 @@
 apiVersion: numaflow.numaproj.io/v1alpha1
 kind: Pipeline
 metadata:
-  name: ekyc-pipeline-rt-v2
+  name: ekyc-pipeline-rt-v3
 spec:
   limits:
     readBatchSize: 2
   vertices:
-    - name: kafka-in-1
+    - name: kafka-in
       source:
         kafka:
           brokers:
             - host.minikube.internal:29092
           topic: customers
-          consumerGroup: connect-jdbc-sink
-    - name: kafka-in-2
-      source:
-        kafka:
-          brokers:
-            - host.minikube.internal:29092
-          topic: coba
-          consumerGroup: console-consumer-3128
-    - name: function-1
+          consumerGroup: console-consumer-26360
+    - name: textract-img
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v7"
@@ -38,7 +31,7 @@ spec:
         env:
           - name: NUMAFLOW_DEBUG
             value: "true" # DO NOT forget the double quotes!!!
-    - name: function-2
+    - name: analysis-textract-result
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v7"
@@ -56,24 +49,22 @@ spec:
         env:
           - name: NUMAFLOW_DEBUG
             value: "true" # DO NOT forget the double quotes!!!
-    - name: out
+    - name: print-out
       sink:
         # A simple log printing sink
         log: {}
-    - name: keluar
+    - name: kafka-out
       sink:
         kafka:
           brokers:
             - host.minikube.internal:29092
           topic: keluaran
   edges:
-    - from: kafka-in-1
-      to: function-1
-    - from: kafka-in-2
-      to: function-1
-    - from: function-1
-      to: function-2
-    - from: function-2
-      to: out
-    - from: function-2
-      to: keluar
+    - from: kafka-in
+      to: textract-img
+    - from: textract-img
+      to: analysis-textract-result
+    - from: analysis-textract-result
+      to: print-out
+    - from: analysis-textract-result
+      to: kafka-out
