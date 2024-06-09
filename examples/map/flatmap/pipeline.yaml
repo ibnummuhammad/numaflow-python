@@ -1,12 +1,14 @@
 apiVersion: numaflow.numaproj.io/v1alpha1
 kind: Pipeline
 metadata:
-  name: ekyc-pipeline-rt-v11
+  name: ekyc-pipeline-rt-v12
 spec:
   limits:
     readBatchSize: 2
   vertices:
     - name: ingest-data
+      scale:
+        min: 1
       source:
         kafka:
           brokers:
@@ -14,6 +16,8 @@ spec:
           topic: customers
           consumerGroup: numaflow-kafka-in
     - name: textract-img
+      scale:
+        min: 1
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v21-ingest-data"
@@ -32,6 +36,8 @@ spec:
           - name: NUMAFLOW_DEBUG
             value: "true"
     - name: analysis-textract-result
+      scale:
+        min: 1
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v16"
@@ -50,6 +56,8 @@ spec:
           - name: NUMAFLOW_DEBUG
             value: "true"
     - name: selfie-photo-rekognition
+      scale:
+        min: 1
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v16"
@@ -68,6 +76,8 @@ spec:
           - name: NUMAFLOW_DEBUG
             value: "true"
     - name: ekyc-decision-moderation
+      scale:
+        min: 1
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v16"
@@ -86,6 +96,8 @@ spec:
           - name: NUMAFLOW_DEBUG
             value: "true"
     - name: ekyc-final-result
+      scale:
+        min: 1
       udf:
         container:
           image: "ibnummuhammad/map-flatmap:v16"
@@ -104,6 +116,8 @@ spec:
           - name: NUMAFLOW_DEBUG
             value: "true"
     - name: store-data
+      scale:
+        min: 1
       sink:
         kafka:
           brokers:
