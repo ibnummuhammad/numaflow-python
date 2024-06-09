@@ -16,7 +16,7 @@ spec:
     - name: textract-img
       udf:
         container:
-          image: "ibnummuhammad/map-flatmap:v17-ingest-data"
+          image: "ibnummuhammad/map-flatmap:v18-ingest-data"
           env:
             - name: PYTHONDEBUG
               value: "true"
