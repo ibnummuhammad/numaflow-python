@@ -1,22 +1,22 @@
 apiVersion: numaflow.numaproj.io/v1alpha1
 kind: Pipeline
 metadata:
-  name: ekyc-pipeline-rt-v8
+  name: ekyc-pipeline-rt-v10
 spec:
   limits:
     readBatchSize: 2
   vertices:
-    - name: kafka-in
+    - name: ingest-data
       source:
         kafka:
           brokers:
             - host.minikube.internal:29092
           topic: customers
           consumerGroup: numaflow-kafka-in
-    - name: analysis-textract-result
+    - name: textract-img
       udf:
         container:
-          image: "ibnummuhammad/map-flatmap:v13"
+          image: "ibnummuhammad/map-flatmap:v16-ingest-data"
           env:
             - name: PYTHONDEBUG
               value: "true"
@@ -30,21 +30,95 @@ spec:
             memory: 1Gi
         env:
           - name: NUMAFLOW_DEBUG
-            value: "true" # DO NOT forget the double quotes!!!
-    - name: print-out
-      sink:
-        # A simple log printing sink
-        log: {}
-    - name: kafka-out
+            value: "true"
+    - name: analysis-textract-result
+      udf:
+        container:
+          image: "ibnummuhammad/map-flatmap:v16"
+          env:
+            - name: PYTHONDEBUG
+              value: "true"
+      containerTemplate:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi
+        env:
+          - name: NUMAFLOW_DEBUG
+            value: "true"
+    - name: selfie-photo-rekognition
+      udf:
+        container:
+          image: "ibnummuhammad/map-flatmap:v16"
+          env:
+            - name: PYTHONDEBUG
+              value: "true"
+      containerTemplate:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi
+        env:
+          - name: NUMAFLOW_DEBUG
+            value: "true"
+    - name: ekyc-decision-moderation
+      udf:
+        container:
+          image: "ibnummuhammad/map-flatmap:v16"
+          env:
+            - name: PYTHONDEBUG
+              value: "true"
+      containerTemplate:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi
+        env:
+          - name: NUMAFLOW_DEBUG
+            value: "true"
+    - name: ekyc-final-result
+      udf:
+        container:
+          image: "ibnummuhammad/map-flatmap:v16"
+          env:
+            - name: PYTHONDEBUG
+              value: "true"
+      containerTemplate:
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi
+        env:
+          - name: NUMAFLOW_DEBUG
+            value: "true"
+    - name: store-data
       sink:
         kafka:
           brokers:
             - host.minikube.internal:29092
-          topic: keluaran
+          topic: kafka-postres-topic
   edges:
-    - from: kafka-in
+    - from: ingest-data
+      to: textract-img
+    - from: textract-img
       to: analysis-textract-result
     - from: analysis-textract-result
-      to: print-out
-    - from: analysis-textract-result
-      to: kafka-out
+      to: selfie-photo-rekognition
+    - from: selfie-photo-rekognition
+      to: ekyc-decision-moderation
+    - from: ekyc-decision-moderation
+      to: ekyc-final-result
+    - from: ekyc-final-result
+      to: store-data
