@@ -1,4 +1,4 @@
-TAG ?= v18-ingest-data
+TAG ?= v21-ingest-data
 PUSH ?= false
 
 .PHONY: image-push

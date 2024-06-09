@@ -42,9 +42,26 @@ class Flatmap(Mapper):
         pesan_dict = json.loads(pesan)
         print("pesan_dict...1")
         print(pesan_dict)
-        pesan_dict["payload"]["after"]["params"] = json.dumps(datum_dict["payload"]["after"])
-        pesan_dict["payload"]["after"]["payload"] = json.dumps(datum_dict["payload"]["after"])
-        pesan_dict["payload"]["after"]["run_ts"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        pesan_dict["payload"]["after"]["params"] = json.dumps(
+            datum_dict["payload"]["after"]
+        )
+        pesan_dict["payload"]["after"]["payload"] = json.dumps(
+            datum_dict["payload"]["after"]
+        )
+        pesan_dict["payload"]["after"]["etl_id"] = datum.event_time.strftime(
+            "%Y-%m-%d-%H"
+        )
+        pesan_dict["payload"]["after"]["etl_id_ts"] = datum.event_time.strftime(
+            "%Y-%m-%d %H:%M:%S.%f"
+        )
+        pesan_dict["payload"]["after"]["etl_id_partition"] = int(
+            datum.event_time.timestamp()
+        )
+        pesan_dict["payload"]["after"]["run_ts"] = datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S.%f"
+        )
+
         print("pesan_dict...2")
         print(pesan_dict)
         pesan_str = json.dumps(pesan_dict)
