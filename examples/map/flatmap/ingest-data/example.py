@@ -41,8 +41,8 @@ class Flatmap(Mapper):
         nilai_dict = json.loads(nilai)
         print("nilai_dict...1")
         print(nilai_dict)
-        # nilai_dict["payload"]["after"]["params"] = pesan_dict["payload"]["after"]
-        # nilai_dict["payload"]["after"]["payload"] = pesan_dict["payload"]["after"]
+        nilai_dict["payload"]["after"]["params"] = json.dumps(pesan_dict["payload"]["after"])
+        nilai_dict["payload"]["after"]["payload"] = json.dumps(pesan_dict["payload"]["after"])
         print("nilai_dict...2")
         print(nilai_dict)
         nilai_str = json.dumps(nilai_dict)
