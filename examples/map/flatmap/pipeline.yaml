@@ -1,7 +1,7 @@
 apiVersion: numaflow.numaproj.io/v1alpha1
 kind: Pipeline
 metadata:
-  name: ekyc-pipeline-rt-v12
+  name: ekyc-pipeline-rt-v16
 spec:
   limits:
     readBatchSize: 2
@@ -122,7 +122,7 @@ spec:
         kafka:
           brokers:
             - host.minikube.internal:29092
-          topic: kafka-postres-topic
+          topic: topic-kafka-redshift
   edges:
     - from: ingest-data
       to: textract-img
